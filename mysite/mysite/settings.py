@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'widget_tweaks',
     'grader.apps.GraderConfig',
     'django.contrib.admin',

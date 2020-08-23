@@ -1,21 +1,50 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block breadcrumb %}
-  <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
-  <li class="breadcrumb-item active"><a href="{% url 'question' essay.question.set %}">Question {{ essay.question.set }}</a></li>
-  <li class="breadcrumb-item active">Essay</li>
+<li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+<li class="breadcrumb-item active">Essay Scoring</li>
 {% endblock %}
 {% block content %}
-    <div class="jumbotron">
-        <h1 class="display-4">Grade {{ essay.score }}</h1>
-        <p class="lead">Congratulations! Maximum Possible Score on this question is {{ essay.question.max_score }}</p>
-        <hr class="my-4">
-        <p>Your essay is graded by the magical power of neural networks.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-    </div>
 
-    <div class="container">
-            <h2 class="display-4">Your Submission</h2>
-            <p class="text-justify">{{ essay.content }}</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Your Submission</h5>
+          <p class="card-text text-justify">{{ essay.content | linebreaks }}</p>
         </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card" id="results">
+        <div class="card-body">
+          <h5 class="card-title">Your percentage score: <span id="myscore">{{ essay.score }}</span>%</h5>
+          <p class="card-text">Your essay had a semantic similarity rate of {{essay.semantic}}. The higher the better!
+            This tests how
+            cohesive
+            your essay was.
+          </p>
+          <p class="card-text">Your essay had a grammatic and spelling accuracy of {{essay.accuracy}}%.</p>
+          <p class="card-text">Your essay had {{essay.wordcount}} words.</p>
+          <p class="card-text">Your essay was {{essay.tense}}% the same tense.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  var score = parseInt(document.getElementById("myscore").innerHTML);
+  var resultsDiv = document.getElementById("results")
+  if (score > 66) {
+    resultsDiv.style.backgroundColor = "#b5e8c1"
+  } else if (score > 33) {
+    resultsDiv.style.backgroundColor = "#e5e8b5"
+  } else {
+    resultsDiv.style.backgroundColor = "#e6a8a8"
+  }
+</script>
 {% endblock %}

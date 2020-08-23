@@ -2,12 +2,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
-from .models import Question, Essay
 from .forms import AnswerForm
 
 from .utils.model import *
 from .utils.helpers import *
 
+from .models import Essay
+
+import numpy as np
 import os
 import pickle
 current_path = os.path.abspath(os.path.dirname(__file__))
@@ -16,14 +18,14 @@ current_path = os.path.abspath(os.path.dirname(__file__))
 
 
 def index(request):
-    questions_list = Question.objects.order_by('set')
+    essay_list = Essay.objects.all()
     context = {
-        'questions_list': questions_list,
+        'essay_list': essay_list,
     }
     return render(request, 'grader/index.html', context)
 
 
-def essay(request, question_id, essay_id):
+def essay(request, essay_id):
     essay = get_object_or_404(Essay, pk=essay_id)
     context = {
         "essay": essay,
@@ -31,14 +33,20 @@ def essay(request, question_id, essay_id):
     return render(request, 'grader/essay.html', context)
 
 
-def question(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+def submit(request):
+    # Handle post
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = AnswerForm(request.POST)
         if form.is_valid():
 
             content = form.cleaned_data.get('answer')
+
+            # Calculate stats
+            wc = word_count(content)
+            spelling_and_grammar = accuracy(content)
+            tense_percentage = tense(content)
+            semantic = semantic_score(content)
 
             if len(content) > 20:
                 num_features = 200
@@ -78,15 +86,17 @@ def question(request, question_id):
             K.clear_session()
             essay = Essay.objects.create(
                 content=content,
-                question=question,
-                score=preds
+                score=preds,
+                semantic=semantic,
+                tense=tense_percentage,
+                accuracy=spelling_and_grammar,
+                wordcount=wc
             )
-        return redirect('essay', question_id=question.set, essay_id=essay.id)
+        return redirect('essay', essay_id=essay.id)
     else:
         form = AnswerForm()
 
     context = {
-        "question": question,
         "form": form,
     }
-    return render(request, 'grader/question.html', context)
+    return render(request, 'grader/submit.html', context)

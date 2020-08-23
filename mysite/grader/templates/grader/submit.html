@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block breadcrumb %}
+<li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+{% endblock %}
+{% block content %}
+<p class="h1">Submit an essay</p>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-success">Grade Me!</button>
+</form>
+
+{% endblock %}
