@@ -6,6 +6,7 @@ from gensim.models import Word2Vec
 import gensim.models.keyedvectors as word2vec
 import math
 
+
 def essay_to_wordlist(essay_v, remove_stopwords):
     """Remove the tagged labels and word tokenize the sentence."""
     essay_v = re.sub("[^a-zA-Z]", " ", essay_v)
@@ -14,6 +15,7 @@ def essay_to_wordlist(essay_v, remove_stopwords):
         stops = set(stopwords.words("english"))
         words = [w for w in words if not w in stops]
     return (words)
+
 
 def essay_to_sentences(essay_v, remove_stopwords):
     """Sentence tokenize the essay and call essay_to_wordlist() for word tokenization."""
@@ -25,22 +27,23 @@ def essay_to_sentences(essay_v, remove_stopwords):
             sentences.append(essay_to_wordlist(raw_sentence, remove_stopwords))
     return sentences
 
+
 def makeFeatureVec(words, model, num_features):
     """Make Feature Vector from the words list of an Essay."""
-    featureVec = np.zeros((num_features,),dtype="float32")
+    featureVec = np.zeros((num_features,), dtype="float32")
     num_words = 0.
-    index2word_set = set(model.wv.index2word)
     for word in words:
-        if word in index2word_set:
+        if word in model:
             num_words += 1
-            featureVec = np.add(featureVec,model[word])        
-    featureVec = np.divide(featureVec,num_words)
+            featureVec = np.add(featureVec, model[word])
+    featureVec = np.divide(featureVec, num_words)
     return featureVec
+
 
 def getAvgFeatureVecs(essays, model, num_features):
     """Main function to generate the word vectors for word2vec model."""
     counter = 0
-    essayFeatureVecs = np.zeros((len(essays),num_features),dtype="float32")
+    essayFeatureVecs = np.zeros((len(essays), num_features), dtype="float32")
     for essay in essays:
         essayFeatureVecs[counter] = makeFeatureVec(essay, model, num_features)
         counter = counter + 1

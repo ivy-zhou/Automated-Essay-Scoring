@@ -1,2 +1,6 @@
+data/glove filter=lfs diff=lfs merge=lfs -text
+data/glove/** filter=lfs diff=lfs merge=lfs -text
 *.txt filter=lfs diff=lfs merge=lfs -text
+.pickle filter=lfs diff=lfs merge=lfs -text
+embeddings.pickle filter=lfs diff=lfs merge=lfs -text
 . !text !filter !merge !diff
