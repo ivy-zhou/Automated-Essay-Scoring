@@ -1,11 +1,8 @@
-.vscode/
 data/glove/
 *.pickle
 mysite/grader/__pycache__/
-mysite/grader/migrations/
 mysite/grader/utils/__pycache__/
 mysite/mysite/__pycache__/
-._DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -110,12 +107,6 @@ ENV/
 .mypy_cache/
 
 .DS_Store
-*.sqlite3
 media/
 *.pyc
-*.db
 *.pid
-# django migrations 
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
